@@ -34,10 +34,11 @@ tsconfig.tsbuildinfo
 .vscode/
 .idea/
 
-# Claude Code internal (skills, settings — not project code)
+# Claude Code local settings
 .claude/settings.local.json
-.claude/skills/
-.claude/reference/
+
+# Docs with credentials
+md/project-hackbay.md
 
 # Other tooling
 .rocketride/
