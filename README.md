@@ -68,25 +68,6 @@ User Input (profile text + date range)
 
 **GDS caching**: Graph algorithm scores are cached in-memory (10-min TTL) so subsequent requests skip the 75s GDS computation.
 
-## RocketRide Integration
-
-The profile parsing stage can optionally run through a [RocketRide](https://rocketride.ai) pipeline for faster C++ processing. When the RocketRide engine is available, profile text is processed through a structured extraction pipeline instead of a direct LLM call.
-
-- **Pipeline**: `pipelines/profile_enrichment.pipe` (Chat -> LLM -> Response)
-- **Endpoint**: `GET /api/enrich-profile` (health check), `POST /api/enrich-profile` (standalone parsing)
-- **Fallback**: If RocketRide is unavailable, falls back to direct Haiku LLM call
-
-### Setup RocketRide (optional)
-
-```bash
-# Download and start the engine
-docker pull ghcr.io/rocketride-org/rocketride-engine:latest
-docker run -p 5565:5565 ghcr.io/rocketride-org/rocketride-engine:latest
-
-# Verify connection
-npx tsx scripts/check-rocketride.ts
-```
-
 ## Neo4j Knowledge Graph
 
 The graph contains **33,833 nodes** and **57,101 relationships**:

@@ -17,7 +17,6 @@
     "openai": "^4.77.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "rocketride": "^1.0.6",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
