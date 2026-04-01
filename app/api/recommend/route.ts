@@ -35,7 +35,8 @@ export async function POST(request: Request) {
       }
 
       try {
-        // Step 1: Parse profile
+        // Step 1: Parse profile — try RocketRide first, fall back to LLM
+        // Parse profile via LLM (RocketRide NER available as optional pre-processor via /api/enrich-profile)
         const profile = await parseProfile(profile_text, start_date, end_date);
         send("profile_parsed", profile);
 
