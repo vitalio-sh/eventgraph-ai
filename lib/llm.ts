@@ -5,8 +5,7 @@ let client: OpenAI | null = null;
 export function getLLMClient(): OpenAI {
   if (!client) {
     client = new OpenAI({
-      apiKey: process.env.GMI_API_KEY!,
-      baseURL: process.env.GMI_BASE_URL || "https://api.gmi-serving.com/v1",
+      apiKey: process.env.OPENAI_API_KEY!,
     });
   }
   return client;
@@ -14,9 +13,9 @@ export function getLLMClient(): OpenAI {
 
 // Model tiers for different tasks
 const MODELS = {
-  fast: "anthropic/claude-haiku-4.5",    // Profile parsing — simple extraction
-  balanced: "anthropic/claude-sonnet-4.6", // Ice-breakers — creative but not complex
-  powerful: "anthropic/claude-opus-4.6",   // Ranking — complex graph reasoning
+  fast: "gpt-4o-mini",   // Profile parsing — simple extraction
+  balanced: "gpt-4o",    // Ice-breakers — creative but not complex
+  powerful: "gpt-4o",    // Ranking — complex graph reasoning
 } as const;
 
 export type ModelTier = keyof typeof MODELS;
