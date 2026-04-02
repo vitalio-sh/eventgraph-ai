@@ -7,6 +7,7 @@ import {
   getSecondDegreeConnections,
   scoreEventsByGraphDensity,
 } from "../neo4j";
+import { queryNeo4jGraph, isRocketRideAvailable } from "../rocketride";
 import { UserProfile, EventResult, PersonResult } from "../types";
 
 interface CandidatePerson extends PersonResult {
@@ -33,6 +34,7 @@ export interface GraphCandidates {
     communityCount: number;
   };
   eventGraphScores: Map<string, { skillRelevance: number; networkDensity: number; crossCompany: number }>;
+  rocketRideResult?: { success: boolean; text?: string; error?: string };
 }
 
 export async function queryGraphForCandidates(
@@ -42,8 +44,19 @@ export async function queryGraphForCandidates(
 ): Promise<GraphCandidates> {
   const companies = [profile.company, ...profile.past_companies].filter(Boolean);
 
-  // Run ALL queries in parallel — including graph algorithms and 2nd-degree discovery
-  const [events, skillMatches, companyMatches, secondDegree, superConnectors, graphScores, eventGraphScores] =
+  // Build a natural-language question for RocketRide to translate into Cypher
+  const rrQuestion =
+    `Find people attending events between ${startDate} and ${endDate} ` +
+    `who have skills in ${profile.skills.slice(0, 5).join(", ")}` +
+    (companies.length ? ` or work at ${companies.slice(0, 3).join(", ")}` : "") +
+    `. Return luma_id, name, headline, and company for each person, limit 20.`;
+
+  const rocketRideQuery = isRocketRideAvailable()
+    .then((available) => (available ? queryNeo4jGraph(rrQuestion) : { success: false, error: "unavailable" }))
+    .catch(() => ({ success: false, error: "timeout" }));
+
+  // Run ALL queries in parallel — including graph algorithms, 2nd-degree discovery, and RocketRide
+  const [events, skillMatches, companyMatches, secondDegree, superConnectors, graphScores, eventGraphScores, rocketRideResult] =
     await Promise.all([
       getEventsInRange(startDate, endDate),
       getPeopleWithMatchingSkills(profile.skills, startDate, endDate),
@@ -52,6 +65,7 @@ export async function queryGraphForCandidates(
       getSuperConnectors(startDate, endDate),
       computeGraphScores(startDate, endDate),
       scoreEventsByGraphDensity(profile.skills, startDate, endDate),
+      rocketRideQuery,
     ]);
 
   const candidateMap = new Map<string, CandidatePerson>();
@@ -169,6 +183,7 @@ export async function queryGraphForCandidates(
     superConnectors,
     graphScores,
     eventGraphScores,
+    rocketRideResult,
   };
 }
 

@@ -94,6 +94,7 @@ export async function POST(request: Request) {
           relCount: graphData.graphScores.relCount,
           communityCount: graphData.graphScores.communityCount,
           connectionPaths: connectionPathsArray,
+          rocketRide: graphData.rocketRideResult,
         });
 
         // Step 6: Super connectors

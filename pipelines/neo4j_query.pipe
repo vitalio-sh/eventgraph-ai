@@ -1,0 +1,109 @@
+{
+  "components": [
+    {
+      "id": "webhook_1",
+      "provider": "webhook",
+      "config": {
+        "hideForm": true,
+        "mode": "Source",
+        "parameters": {},
+        "type": "webhook"
+      },
+      "ui": {
+        "position": {
+          "x": 20,
+          "y": 200
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        }
+      }
+    },
+    {
+      "id": "llm_openai_1",
+      "provider": "llm_openai",
+      "config": {
+        "profile": "openai-4o",
+        "openai-4o": {
+          "apikey": "$OPENAI_KEY"
+        }
+      },
+      "ui": {
+        "position": {
+          "x": 240,
+          "y": 80
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        }
+      }
+    },
+    {
+      "id": "db_neo4j_1",
+      "provider": "db_neo4j",
+      "config": {
+        "profile": "default",
+        "default": {
+          "uri": "neo4j+s://e0d746b9.databases.neo4j.io",
+          "auth_method": "userpass",
+          "user": "neo4j",
+          "password": "lVeQHFPdtlI6MaTIdrTXOUaeBkMnAttDtqPCCHx-U78",
+          "database": "neo4j",
+          "db_description": "Bay Area tech events knowledge graph with 234 events and 1785 attendees. Node types: Person (luma_id, name, headline, about, job_title, linkedin_url, connections, followers, twitter, email), Event (slug, title, description, date, start, end, venue, url, cover_url, calendar_name), Company (name), Skill (name), Host (name), City (name), Date (date), Experience (title), Education (degree, field). Relationships: ATTENDS (Person->Event), HAS_SKILL (Person->Skill), WORKS_AT (Person->Company), HAS_EXPERIENCE (Person->Experience), AT_COMPANY (Experience->Company), HOSTED_BY (Event->Host), IN_CITY (Event->City), ON_DATE (Event->Date). Event dates range from 2026-01-01 to 2026-06-30. Date nodes store date as a string property 'd.date'.",
+          "max_attempts": 5
+        }
+      },
+      "input": [
+        {
+          "lane": "text",
+          "from": "webhook_1"
+        }
+      ],
+      "invoke": {
+        "llm": "llm_openai_1"
+      },
+      "ui": {
+        "position": {
+          "x": 240,
+          "y": 200
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        }
+      }
+    },
+    {
+      "id": "response_text_1",
+      "provider": "response_text",
+      "config": {
+        "laneName": "text"
+      },
+      "input": [
+        {
+          "lane": "text",
+          "from": "db_neo4j_1"
+        }
+      ],
+      "ui": {
+        "position": {
+          "x": 460,
+          "y": 200
+        },
+        "measured": {
+          "width": 150,
+          "height": 66
+        }
+      }
+    }
+  ],
+  "project_id": "e4f211eb-04ad-412c-a7cf-a763c9f85d5f",
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "version": 1
+}
