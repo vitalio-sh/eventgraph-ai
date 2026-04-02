@@ -234,6 +234,7 @@ MIT
 ## Author
 
 **Vitalii Ionov** ([@vitalio](https://github.com/vitalio-sh)) — NerdTres Inc.
+
 **Suyash Srivastava** ([@Suyash906](https://github.com/Suyash906)) — eBay.
 
 Built at HackBay 2026, San Francisco.
